@@ -14,13 +14,19 @@ object Hello {
   def main(args: Array[String]): Unit = {
     val serializer = new StringSerializer
 
-    val consumer = Utils.createConsumerFor(readTopic, group, zookeeper)
+    val consumerConnector = Utils.createConsumerFor(readTopic, group, zookeeper)
+
+    val iterator = consumerConnector.createMessageStreams(Map("test" -> 1)).get(readTopic).get.head.iterator()
     val producer = Utils.createProducer[String, String](broker, serializer, serializer)
 
     val record1 = new ProducerRecord[String, String]("test", "hey.. there I am using laptop!!")
     producer.send(record1)
 
-    val message = consumer.next()
-    println(message.message().map(_.toChar).mkString(""))
+    while (iterator.hasNext()) {
+      val message = iterator.next()
+      consumerConnector.commitOffsets(true)
+
+      println(message.message().map(_.toChar).mkString(""))
+    }
   }
 }

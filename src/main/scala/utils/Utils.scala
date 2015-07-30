@@ -1,12 +1,20 @@
 package utils
 
+import java.io.File
 import java.util.Properties
 
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.Source
 import kafka.consumer.{ConsumerConfig, Consumer}
+import kafka.utils.VerifiableProperties
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig}
 import org.apache.kafka.common.serialization.Serializer
 
 object Utils {
+
+  implicit val actorSystem = ActorSystem("kafka")
+  implicit val materializer = ActorMaterializer()
 
   def createProducer[K, V](brokersSocketAddress: String, keySerializer: Serializer[K], valueSerializer: Serializer[V]) = {
     val producerProps = new Properties()
@@ -22,10 +30,10 @@ object Utils {
     consumerProps.put("group.id", groupId)
 
     Consumer.create(new ConsumerConfig(consumerProps))
-      .createMessageStreams(Map(topic -> 1))
-      .get(topic)
-      .get
-      .head
-      .iterator()
+  }
+
+
+  def filesIn(directoryName: String) = {
+    Source(new File(directoryName).listFiles.toList)
   }
 }
