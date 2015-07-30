@@ -10,7 +10,8 @@ libraryDependencies ++= Seq(
   "io.confluent" % "kafka-avro-serializer" % "1.0",
   "org.apache.avro" % "avro" % "1.7.7",
   "log4j" % "log4j" % "1.2.17",
-  "com.typesafe.akka" % "akka-stream-experimental_2.11" % "1.0"
+  "com.typesafe.akka" % "akka-stream-experimental_2.11" % "1.0",
+  "com.softwaremill" %% "reactive-kafka" % "0.7.0"
 )
 
 resolvers += "confluent" at "http://packages.confluent.io/maven/"
