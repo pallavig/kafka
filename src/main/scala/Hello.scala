@@ -1,6 +1,4 @@
-import java.util.Properties
-import kafka.consumer.{Consumer, ConsumerConfig}
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
+import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.serialization.StringSerializer
 import utils.Utils
 
@@ -17,7 +15,7 @@ object Hello {
     val consumerConnector = Utils.createConsumerFor(readTopic, group, zookeeper)
 
     val iterator = consumerConnector.createMessageStreams(Map("test" -> 1)).get(readTopic).get.head.iterator()
-    val producer = Utils.createProducer[String, String](broker, serializer, serializer)
+    val producer = Utils.createProducer[String, String](List(broker), serializer, serializer)
 
     val record1 = new ProducerRecord[String, String]("test", "hey.. there I am using laptop!!")
     producer.send(record1)
